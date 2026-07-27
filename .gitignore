@@ -1,0 +1,23 @@
+# 環境変数（APIキーなど）
+.env
+.env.local
+.env*.local
+
+# Node.js
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# ビルド成果物
+build/
+dist/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# エディタ
+.vscode/
+.idea/
