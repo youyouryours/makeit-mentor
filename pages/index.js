@@ -72,7 +72,7 @@ export default function MentorCopilot() {
     });
     const data = await response.json();
     const text = data.content?.map(i => i.text || "").join("") || "";
-    const clean = text.replace(/```json|```/g, "").trim();
+    const clean = text.replace(/```json[\r\n]*/g, "").replace(/```[\r\n]*/g, "").trim();
     return { parsed: JSON.parse(clean), text };
   }
 
