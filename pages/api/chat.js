@@ -23,7 +23,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-6", // 使用するClaudeのモデル
-        max_tokens: 1000,           // 返答の最大トークン数
+        max_tokens: 2000,           // 返答の最大トークン数
         system,                     // システムプロンプト（メイキットの思想・ルール）
         messages,                   // 会話履歴（セッション中の入力を蓄積）
       }),
