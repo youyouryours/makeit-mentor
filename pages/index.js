@@ -268,7 +268,45 @@ export default function MentorCopilot() {
                     ))}
                   </div>
                 </div>
-
+                {/* ロードマップ */}
+                {goalResult.roadmap && (
+                  <div style={{ marginBottom: 12 }}>
+                    <div style={{ fontSize: 11, color: "#555", letterSpacing: "0.1em", marginBottom: 12 }}>ロードマップ</div>
+                    <div style={{ background: "#15151f", border: "1px solid #1e1e2e", borderRadius: 10, padding: "18px" }}>
+                      {goalResult.roadmap.map((item, i) => (
+                        <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: i < goalResult.roadmap.length - 1 ? 16 : 0 }}>
+                          {/* ステップアイコン */}
+                          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0 }}>
+                            <div style={{
+                              width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, flexShrink: 0,
+                              background: item.status === "done" ? "#10b981" : item.status === "current" ? "#6366f1" : "#1e1e2e",
+                              color: item.status === "upcoming" ? "#444" : "#fff",
+                              boxShadow: item.status === "current" ? "0 0 10px #6366f180" : "none",
+                            }}>
+                              {item.status === "done" ? "✓" : item.step}
+                            </div>
+                            {i < goalResult.roadmap.length - 1 && (
+                              <div style={{ width: 1, height: 16, background: item.status === "done" ? "#10b98150" : "#1e1e2e", marginTop: 2 }} />
+                            )}
+                          </div>
+                          {/* ステップ内容 */}
+                          <div style={{ paddingTop: 4 }}>
+                            <div style={{
+                              fontSize: 13, fontWeight: item.status === "current" ? 600 : 400,
+                              color: item.status === "done" ? "#10b981" : item.status === "current" ? "#e0e0f0" : "#444",
+                            }}>
+                              {item.status === "current" && <span style={{ color: "#6366f1", marginRight: 6 }}>👉</span>}
+                              {item.title}
+                            </div>
+                            {item.status === "current" && (
+                              <div style={{ fontSize: 11, color: "#6366f1", marginTop: 3 }}>今ここ</div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 {/* 今週のタスク */}
                 <div style={{ fontSize: 11, color: "#555", letterSpacing: "0.1em", marginBottom: 12 }}>今週のタスク</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
