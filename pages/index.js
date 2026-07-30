@@ -129,7 +129,7 @@ export default function MentorCopilot() {
   }
 
   // セッション全体をリセット
-  function handleReset() {
+   function handleReset() {
     setSituation("");
     setCoachingResult(null);
     setCoachingHistory([]);
@@ -137,8 +137,8 @@ export default function MentorCopilot() {
     setGoalInput("");
     setGoalResult(null);
     setError(null);
+    setStudentName("");
   }
-
   // AIが返したフェーズIDからフェーズオブジェクトを取得
   const detectedPhaseObj = coachingResult ? PHASES.find(p => p.id === coachingResult.detectedPhase) : null;
   const nextPhaseObj = coachingResult?.nextPhase ? PHASES.find(p => p.id === coachingResult.nextPhase) : null;
@@ -156,7 +156,22 @@ export default function MentorCopilot() {
       </div>
 
       <div style={{ maxWidth: 680, margin: "0 auto", padding: "28px 20px 0" }}>
-
+        {/* 生徒名入力（変更時に自動リセット） */}
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ fontSize: 11, color: "#555", letterSpacing: "0.1em", marginBottom: 8 }}>生徒名</div>
+          <input
+            type="text"
+            value={studentName}
+            onChange={e => handleStudentNameChange(e.target.value)}
+            placeholder="例：田中さん"
+            style={{ width: "100%", background: "#15151f", border: "1px solid #1e1e2e", borderRadius: 10, color: "#e8e8f0", fontSize: 14, padding: "12px 16px", outline: "none", boxSizing: "border-box", fontFamily: "inherit" }}
+          />
+          {studentName && (
+            <div style={{ fontSize: 11, color: "#555", marginTop: 6 }}>
+              ※ 生徒名を変更すると会話履歴が自動でリセットされます
+            </div>
+          )}
+        </div>
         {/* タブ切り替え */}
         <div style={{ display: "flex", gap: 4, marginBottom: 28, background: "#15151f", borderRadius: 10, padding: 4 }}>
           {[{ id: "coaching", label: "声かけ生成" }, { id: "goal", label: "目標・タスク分解" }].map(tab => (
