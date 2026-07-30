@@ -44,6 +44,7 @@ const GOAL_PROMPT = [
 export default function MentorCopilot() {
   // タブ管理
   const [activeTab, setActiveTab] = useState("coaching");
+  const [studentName, setStudentName] = useState("");
 
   // 声かけ生成の状態
   const [phase, setPhase] = useState("clarify");
@@ -61,7 +62,18 @@ export default function MentorCopilot() {
   const resultRef = useRef(null);
 
   const currentPhase = PHASES.find(p => p.id === phase);
-
+　// 生徒名が変わったら自動でセッションをリセット
+  function handleStudentNameChange(newName) {
+    if (newName !== studentName) {
+      setCoachingHistory([]);
+      setCoachingResult(null);
+      setGoalResult(null);
+      setSituation("");
+      setGoalInput("");
+      setError(null);
+    }
+    setStudentName(newName);
+  }
   // APIリクエスト共通関数
   // /api/chat経由でAPIキーを隠す
   async function callAPI(system, messages) {
