@@ -64,21 +64,25 @@ export default function MentorCopilot() {
   // 共通状態
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [sessionLog, setSessionLog] = useState([]); // セッションログ
+  const [logCopied, setLogCopied] = useState(false); // コピー完了フラグ
   const resultRef = useRef(null);
 
   const currentPhase = PHASES.find(p => p.id === phase);
 　// 生徒名が変わったら自動でセッションをリセット
   function handleStudentNameChange(newName) {
-    if (newName !== studentName) {
-      setCoachingHistory([]);
-      setCoachingResult(null);
-      setGoalResult(null);
-      setSituation("");
-      setGoalInput("");
-      setError(null);
-    }
-    setStudentName(newName);
+  if (newName !== studentName) {
+    setCoachingHistory([]);
+    setCoachingResult(null);
+    setGoalResult(null);
+    setSituation("");
+    setGoalInput("");
+    setError(null);
+    setSessionLog([]);
+    setLogCopied(false);
   }
+  setStudentName(newName);
+}
   // APIリクエスト共通関数
   // /api/chat経由でAPIキーを隠す
   async function callAPI(system, messages) {
@@ -143,6 +147,8 @@ export default function MentorCopilot() {
     setGoalResult(null);
     setError(null);
     setStudentName("");
+    setSessionLog([]);
+    setLogCopied(false);
   }
   // AIが返したフェーズIDからフェーズオブジェクトを取得
   const detectedPhaseObj = coachingResult ? PHASES.find(p => p.id === coachingResult.detectedPhase) : null;
@@ -229,11 +235,47 @@ export default function MentorCopilot() {
                         <span style={{ fontSize: 11, color: "#6366f1", background: "#6366f115", padding: "2px 8px", borderRadius: 4 }}>{q.purpose}</span>
                         {q.risk && q.risk !== "null" && <span style={{ fontSize: 11, color: "#f59e0b", background: "#f59e0b15", padding: "2px 8px", borderRadius: 4 }}>注意：{q.risk}</span>}
                       </div>
+                        <button onClick={() => {
+                          setSessionLog(prev => [...prev, {
+                            time: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }),
+                            input: situation,
+                            chosen: q.text,
+                          }]);
+                        }} style={{ marginTop: 8, padding: "4px 12px", background: "transparent", border: "1px solid #2e2e4a", borderRadius: 6, color: "#6366f1", fontSize: 11, cursor: "pointer" }}>
+                          ✓ これを使った
+                        </button>
                     </div>
                   ))}
                 </div>
               </div>
             )}
+              {/* セッションログ */}
+              {sessionLog.length > 0 && (
+                <div style={{ marginTop: 32 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                    <div style={{ fontSize: 11, color: "#555", letterSpacing: "0.1em" }}>セッションログ（{sessionLog.length}件）</div>
+                    <button onClick={() => {
+                      const text = sessionLog.map((log, i) =>
+                        `【${log.time}】\n入力：${log.input}\n選んだ声かけ：${log.chosen}`
+                      ).join('\n\n');
+                      navigator.clipboard.writeText(text);
+                      setLogCopied(true);
+                      setTimeout(() => setLogCopied(false), 2000);
+                    }} style={{ padding: "4px 12px", background: logCopied ? "#10b981" : "#1e1e2e", border: "none", borderRadius: 6, color: logCopied ? "#fff" : "#888", fontSize: 11, cursor: "pointer" }}>
+                      {logCopied ? "コピーしました！" : "ログをコピー"}
+                    </button>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    {sessionLog.map((log, i) => (
+                      <div key={i} style={{ background: "#0d0d17", border: "1px solid #1e1e2e", borderRadius: 8, padding: "12px 14px" }}>
+                        <div style={{ fontSize: 10, color: "#444", marginBottom: 6 }}>{log.time}</div>
+                        <div style={{ fontSize: 12, color: "#555", marginBottom: 6 }}>入力：{log.input.slice(0, 60)}{log.input.length > 60 ? '…' : ''}</div>
+                        <div style={{ fontSize: 13, color: "#6366f1" }}>→ 「{log.chosen}」</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
           </div>
         )}
 
