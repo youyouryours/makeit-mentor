@@ -53,6 +53,7 @@ export default function MentorCopilot() {
 
   // 声かけ生成の状態
   const [phase] = useState("clarify");
+  const [situation, setSituation] = useState("");
   const [coachingResult, setCoachingResult] = useState(null);
   const [coachingHistory, setCoachingHistory] = useState([]);
 
