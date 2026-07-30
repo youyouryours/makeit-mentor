@@ -26,7 +26,7 @@ const SYSTEM_PROMPT = [
   "【テンション考慮】テンションが1〜2の場合：提案より先に共感・受容を示す。まず話を聞く姿勢を優先する。",
   "【詰まり考慮】難しいと感じている点が入力されている場合：その詰まりを一緒に分解する方向で質問を組み立てる。",
   "【フィナーレ意識】11月末に向けて発表・アウトプットにつながる動きを意識した声かけをする。ただし焦らせない。",
-  "メンターが入力したフェーズと生徒の状況をもとに、以下のJSON形式のみで返してください。マークダウン不要。",
+  "メンターが入力した生徒の状況をもとに、フェーズを自動判定して以下のJSON形式のみで返してください。マークダウン不要。",
   '{"detectedPhase":"clarify/design/revise/execute/redirectのいずれか","phaseReason":"判断理由1文","questions":[{"text":"声かけ","purpose":"理由15字以内","risk":"注意点またはnull"},{"text":"声かけ","purpose":"理由15字以内","risk":null},{"text":"声かけ","purpose":"理由15字以内","risk":null}],"alert":"注意点またはnull","nextPhase":"次フェーズIDまたはnull"}',
 ].join("\n");
 
@@ -53,7 +53,7 @@ export default function MentorCopilot() {
 
   // 声かけ生成の状態
   const [phase, setPhase] = useState("clarify");
-  const [situation, setSituation] = useState("");
+  const [phase] = useState("clarify");
   const [coachingResult, setCoachingResult] = useState(null);
   const [coachingHistory, setCoachingHistory] = useState([]);
 
@@ -189,19 +189,6 @@ export default function MentorCopilot() {
         {/* 声かけ生成タブ */}
         {activeTab === "coaching" && (
           <div>
-            {/* フェーズ選択ボタン */}
-            <div style={{ marginBottom: 24 }}>
-              <div style={{ fontSize: 11, color: "#555", letterSpacing: "0.1em", marginBottom: 10 }}>現在のフェーズ</div>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {PHASES.map(p => (
-                  <button key={p.id} onClick={() => { setPhase(p.id); setCoachingResult(null); }} style={{ padding: "7px 14px", borderRadius: 8, border: phase === p.id ? "1.5px solid " + p.color : "1.5px solid #1e1e2e", background: phase === p.id ? p.color + "18" : "transparent", color: phase === p.id ? p.color : "#555", fontSize: 13, fontWeight: phase === p.id ? 600 : 400, cursor: "pointer" }}>
-                    {p.label}
-                  </button>
-                ))}
-              </div>
-              <div style={{ fontSize: 12, color: currentPhase.color, marginTop: 8, opacity: 0.8 }}>{currentPhase.desc}</div>
-            </div>
-
             {/* 状況入力 */}
             <div style={{ marginBottom: 16 }}>
               <div style={{ fontSize: 11, color: "#555", letterSpacing: "0.1em", marginBottom: 8 }}>生徒の状況・発言</div>
