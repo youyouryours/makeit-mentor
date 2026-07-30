@@ -197,7 +197,7 @@ export default function MentorCopilot() {
             {/* 状況入力 */}
             <div style={{ marginBottom: 16 }}>
               <div style={{ fontSize: 11, color: "#555", letterSpacing: "0.1em", marginBottom: 8 }}>生徒の状況・発言</div>
-              <textarea value={situation} onChange={e => setSituation(e.target.value)} placeholder="例：起業したいとは言ってるけど、何をやりたいか全然決まってない。服が好きとだけ言ってた。" style={{ width: "100%", minHeight: 110, background: "#15151f", border: "1px solid #1e1e2e", borderRadius: 10, color: "#e8e8f0", fontSize: 14, padding: "14px 16px", resize: "vertical", outline: "none", lineHeight: 1.6, boxSizing: "border-box", fontFamily: "inherit" }} />
+              <textarea value={situation} onChange={e => setSituation(e.target.value)} placeholder={"例：\n取り組んでいる企画：古着ファッションショー\nタスク進行度：2（少しだけできた）\n詳細：SNSで告知しようとしたけど何を投稿すればいいかわからなかった\n今日話したいこと：集客の方法を考えたい\n難しいと感じていること：人を巻き込む方法がわからない\nテンション：2"} style={{ width: "100%", minHeight: 110, background: "#15151f", border: "1px solid #1e1e2e", borderRadius: 10, color: "#e8e8f0", fontSize: 14, padding: "14px 16px", resize: "vertical", outline: "none", lineHeight: 1.6, boxSizing: "border-box", fontFamily: "inherit" }} />
             </div>
 
             {/* 送信ボタン */}
