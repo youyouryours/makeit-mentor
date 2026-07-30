@@ -146,7 +146,6 @@ export default function MentorCopilot() {
   }
   // AIが返したフェーズIDからフェーズオブジェクトを取得
   const detectedPhaseObj = coachingResult ? PHASES.find(p => p.id === coachingResult.detectedPhase) : null;
-  const nextPhaseObj = coachingResult?.nextPhase ? PHASES.find(p => p.id === coachingResult.nextPhase) : null;
 
   return (
     <div style={{ fontFamily: "'Hiragino Sans', 'Noto Sans JP', sans-serif", minHeight: "100vh", background: "#0f0f13", color: "#e8e8f0", paddingBottom: 60 }}>
@@ -233,21 +232,6 @@ export default function MentorCopilot() {
                     </div>
                   ))}
                 </div>
-
-                {/* 次フェーズ移行ボタン */}
-                {nextPhaseObj && (
-                  <div style={{ marginTop: 20 }}>
-                    <div style={{ fontSize: 11, color: "#555", letterSpacing: "0.1em", marginBottom: 10 }}>フェーズ移行の提案</div>
-                    <button onClick={() => { setPhase(nextPhaseObj.id); setSituation(""); setCoachingResult(null); }} style={{ width: "100%", padding: "11px", background: nextPhaseObj.color + "15", border: "1px solid " + nextPhaseObj.color + "50", color: nextPhaseObj.color, borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-                      {nextPhaseObj.label} に進む →
-                    </button>
-                  </div>
-                )}
-
-                {/* 同じフェーズで続けるボタン */}
-                <button onClick={() => { setSituation(""); setCoachingResult(null); }} style={{ width: "100%", marginTop: 10, padding: "11px", background: "transparent", border: "1px solid #1e1e2e", color: "#555", borderRadius: 8, fontSize: 13, cursor: "pointer" }}>
-                  同じフェーズで続ける
-                </button>
               </div>
             )}
           </div>
