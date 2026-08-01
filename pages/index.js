@@ -156,7 +156,7 @@ export default function MentorCopilot() {
       <div style={{ borderBottom: "1px solid " + border, padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", background: bg, position: "sticky", top: 0, zIndex: 10 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ width: 8, height: 8, borderRadius: "50%", background: purple }} />
-          <span style={{ fontWeight: 700, fontSize: 15, letterSpacing: "0.03em", color: textMain }}>Make it! メンターコパイロット</span>
+          <span style={{ fontWeight: 700, fontSize: 15, letterSpacing: "0.03em", color: textMain }}>Make it! AI（MAI）</span>
         </div>
         <button onClick={handleReset} style={{ background: "transparent", border: "1px solid " + border, color: textSub, fontSize: 12, padding: "4px 12px", borderRadius: 6, cursor: "pointer" }}>リセット</button>
       </div>
