@@ -258,7 +258,7 @@ export default function MentorCopilot() {
                       </div>
                     </div>
                   );
-                  })}
+                })}
                 </div>
               </div>
             )}
