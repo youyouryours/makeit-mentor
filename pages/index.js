@@ -229,39 +229,30 @@ export default function MentorCopilot() {
                   {coachingResult.questions?.map((q, i) => {
                     const isUsed = sessionLog.some(log => log.chosen === q.text && log.input === situation);
                     return (
-                    <div key={i} style={{ background: bgCard, border: i === 0 ? "1px solid " + purple + "60" : "1px solid " + border, borderRadius: 10, padding: "16px 18px", position: "relative" }}>
-                      {i === 0 && <div style={{ position: "absolute", top: -1, left: 14, background: purple, color: "#fff", fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: "0 0 6px 6px" }}>推奨</div>}
-                      <div style={{ fontSize: 15, lineHeight: 1.7, color: textMain, marginTop: i === 0 ? 8 : 0, marginBottom: 10 }}>「{q.text}」</div>
-                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-                        <span style={{ fontSize: 11, color: purple, background: purple + "12", padding: "2px 8px", borderRadius: 4 }}>{q.purpose}</span>
-                        {q.risk && q.risk !== "null" && <span style={{ fontSize: 11, color: amber, background: amber + "12", padding: "2px 8px", borderRadius: 4 }}>注意：{q.risk}</span>}
-                        <button onClick={() => {
-                          setSessionLog(prev => [...prev, {
-                            time: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }),
-                            input: situation,
-                            chosen: q.text,
-                          }]);
-                        }} style={{ marginLeft: "auto", padding: "3px 10px", background: "transparent", border: "1px solid " + border, borderRadius: 6, color: purple, fontSize: 11, cursor: "pointer" }}>
-                        <button
-                          disabled={isUsed}
-                          onClick={() => {
-                            setSessionLog(prev => [...prev, {
-                              time: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }),
-                              input: situation,
-                              chosen: q.text,
-                            }]);
-                          }}
-                          style={{ marginLeft: "auto", padding: "3px 10px", background: isUsed ? green + "15" : "transparent", border: "1px solid " + (isUsed ? green : border), borderRadius: 6, color: isUsed ? green : purple, fontSize: 11, cursor: isUsed ? "default" : "pointer" }}
-                        >
-                          {isUsed ? "✓ 使用済み" : "✓ これを使った"}
-                        </button>
+                      <div key={i} style={{ background: bgCard, border: i === 0 ? "1px solid " + purple + "60" : "1px solid " + border, borderRadius: 10, padding: "16px 18px", position: "relative" }}>
+                        {i === 0 && <div style={{ position: "absolute", top: -1, left: 14, background: purple, color: "#fff", fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: "0 0 6px 6px" }}>推奨</div>}
+                        <div style={{ fontSize: 15, lineHeight: 1.7, color: textMain, marginTop: i === 0 ? 8 : 0, marginBottom: 10 }}>「{q.text}」</div>
+                        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                          <span style={{ fontSize: 11, color: purple, background: purple + "12", padding: "2px 8px", borderRadius: 4 }}>{q.purpose}</span>
+                          {q.risk && q.risk !== "null" && <span style={{ fontSize: 11, color: amber, background: amber + "12", padding: "2px 8px", borderRadius: 4 }}>注意：{q.risk}</span>}
+                          <button
+                            disabled={isUsed}
+                            onClick={() => {
+                              setSessionLog(prev => [...prev, {
+                                time: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }),
+                                input: situation,
+                                chosen: q.text,
+                              }]);
+                            }}
+                            style={{ marginLeft: "auto", padding: "3px 10px", background: isUsed ? green + "15" : "transparent", border: "1px solid " + (isUsed ? green : border), borderRadius: 6, color: isUsed ? green : purple, fontSize: 11, cursor: isUsed ? "default" : "pointer" }}
+                          >
+                            {isUsed ? "✓ 使用済み" : "✓ これを使った"}
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
                 </div>
-              </div>
-            )}
 
             {/* セッションログ */}
             {sessionLog.length > 0 && (
