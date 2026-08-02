@@ -8,7 +8,7 @@ const PHASES = [
   { id: "execute",  label: "④ 実行",     color: "#059669", desc: "やる・記録・振り返る" },
   { id: "redirect", label: "⑤ 方向修正", color: "#dc2626", desc: "再び行動に戻す" },
 ];
-//ソース管理テスト
+//developブランチテスト
 // システムプロンプト：声かけ生成用
 const SYSTEM_PROMPT = [
   "あなたはRE:ACTION FIREの伴走セッションにおける、メンター向けコパイロットAIです。",
