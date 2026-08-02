@@ -226,7 +226,9 @@ export default function MentorCopilot() {
                 {/* 声かけ候補 */}
                 <div style={{ fontSize: 11, color: textSub, letterSpacing: "0.1em", marginBottom: 12 }}>声かけ候補</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  {coachingResult.questions?.map((q, i) => (
+                  {coachingResult.questions?.map((q, i) => {
+                    const isUsed = sessionLog.some(log => log.chosen === q.text && log.input === situation);
+                    return (
                     <div key={i} style={{ background: bgCard, border: i === 0 ? "1px solid " + purple + "60" : "1px solid " + border, borderRadius: 10, padding: "16px 18px", position: "relative" }}>
                       {i === 0 && <div style={{ position: "absolute", top: -1, left: 14, background: purple, color: "#fff", fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: "0 0 6px 6px" }}>推奨</div>}
                       <div style={{ fontSize: 15, lineHeight: 1.7, color: textMain, marginTop: i === 0 ? 8 : 0, marginBottom: 10 }}>「{q.text}」</div>
@@ -240,11 +242,23 @@ export default function MentorCopilot() {
                             chosen: q.text,
                           }]);
                         }} style={{ marginLeft: "auto", padding: "3px 10px", background: "transparent", border: "1px solid " + border, borderRadius: 6, color: purple, fontSize: 11, cursor: "pointer" }}>
-                          ✓ これを使った
+                        <button
+                          disabled={isUsed}
+                          onClick={() => {
+                            setSessionLog(prev => [...prev, {
+                              time: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }),
+                              input: situation,
+                              chosen: q.text,
+                            }]);
+                          }}
+                          style={{ marginLeft: "auto", padding: "3px 10px", background: isUsed ? green + "15" : "transparent", border: "1px solid " + (isUsed ? green : border), borderRadius: 6, color: isUsed ? green : purple, fontSize: 11, cursor: isUsed ? "default" : "pointer" }}
+                        >
+                          {isUsed ? "✓ 使用済み" : "✓ これを使った"}
                         </button>
                       </div>
                     </div>
-                  ))}
+                  );
+                  })}
                 </div>
               </div>
             )}
