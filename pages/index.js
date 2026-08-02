@@ -429,10 +429,6 @@ export default function MentorCopilot() {
                   </div>
                 )}
 
-                {/* 別の生徒で試すボタン */}
-                <button onClick={() => { setGoalInput(""); setGoalResult(null); }} style={{ width: "100%", marginTop: 16, padding: "11px", background: "transparent", border: "1px solid " + border, color: textSub, borderRadius: 8, fontSize: 13, cursor: "pointer" }}>
-                  別の生徒で試す
-                </button>
               </div>
             )}
           </div>
