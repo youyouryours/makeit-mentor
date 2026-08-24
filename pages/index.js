@@ -143,16 +143,7 @@ export default function MentorCopilot() {
       week12: "最終化・実行フェーズ（追い込み）・次のマイルストーン：week13企画の実行",
       week13: "企画の実行（フィナーレ）",
     };
-　function handleAddCustomQuestion() {
-    if (!customQuestion.trim()) return;
-    setSessionLog(prev => [...prev, {
-      time: new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" }),
-      input: situation,
-      chosen: customQuestion.trim(),
-      isCustom: true,
-    }]);
-  setCustomQuestion("");
-}
+
     const userMessage = "現在：" + currentWeek + "（" + weekPhaseMap[currentWeek] + "）\n\n生徒の状況・発言：\n" + situation;     
     
     try {
@@ -167,7 +158,16 @@ export default function MentorCopilot() {
       setLoading(false);
     }
   }
-
+  function handleAddCustomQuestion() {
+    if (!customQuestion.trim()) return;
+    setSessionLog(prev => [...prev, {
+      time: new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" }),
+      input: situation,
+      chosen: customQuestion.trim(),
+      isCustom: true,
+    }]);
+  setCustomQuestion("");
+  }
   // 目標・タスク分解の送信処理
   async function handleGoalSubmit() {
     if (!goalInput.trim()) return;
