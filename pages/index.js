@@ -72,6 +72,7 @@ export default function MentorCopilot() {
   // セッションログ（選んだ声かけの記録）
   const [sessionLog, setSessionLog] = useState([]);
   const [logCopied, setLogCopied] = useState(false); // コピー完了フラグ
+  const [customQuestion, setCustomQuestion] = useState(""); // ← 追加：カスタム声かけ入力
 
   const resultRef = useRef(null); // 結果欄へのスクロール用
 
@@ -142,7 +143,16 @@ export default function MentorCopilot() {
       week12: "最終化・実行フェーズ（追い込み）・次のマイルストーン：week13企画の実行",
       week13: "企画の実行（フィナーレ）",
     };
-
+　function handleAddCustomQuestion() {
+    if (!customQuestion.trim()) return;
+    setSessionLog(prev => [...prev, {
+      time: new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" }),
+      input: situation,
+      chosen: customQuestion.trim(),
+      isCustom: true,
+    }]);
+  setCustomQuestion("");
+}
     const userMessage = "現在：" + currentWeek + "（" + weekPhaseMap[currentWeek] + "）\n\n生徒の状況・発言：\n" + situation;     
     
     try {
@@ -304,6 +314,29 @@ export default function MentorCopilot() {
                 {/* 声かけ候補3つ（使用済みボタン付き） */}
                 <div style={{ fontSize: 11, color: textSub, letterSpacing: "0.1em", marginBottom: 12 }}>声かけ候補</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {/* ↓ ここに新規追加：候補リストの一番上 */}
+                    <div style={{ background: bgCard, border: "1px dashed " + border, borderRadius: 10, padding: "14px 16px" }}>
+                      <div style={{ fontSize: 11, color: textSub, marginBottom: 8 }}>自分で考えた声かけを使う場合</div>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <input
+                          type="text"
+                          value={customQuestion}
+                          onChange={e => setCustomQuestion(e.target.value)}
+                          onKeyDown={e => { if (e.key === "Enter") handleAddCustomQuestion(); }}
+                          placeholder="実際に使った声かけを入力"
+                          style={{ flex: 1, background: bgInput, border: "1px solid " + border, borderRadius: 8, color: textMain, fontSize: 13, padding: "10px 12px", outline: "none", boxSizing: "border-box", fontFamily: "inherit" }}
+                        />
+                        <button
+                          onClick={handleAddCustomQuestion}
+                          disabled={!customQuestion.trim()}
+                          style={{ padding: "0 16px", background: !customQuestion.trim() ? "#e0e0ec" : purple, color: !customQuestion.trim() ? "#aaa" : "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: !customQuestion.trim() ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}
+                        >
+                          ログに追加
+                        </button>
+                      </div>
+                    </div>
+                    {/* ↑ ここまで追加 */}
+
                   {coachingResult.questions?.map((q, i) => {
                     // 同じ入力・同じ声かけがログに存在するか確認
                     const isUsed = sessionLog.some(log => log.chosen === q.text && log.input === situation);
