@@ -213,6 +213,7 @@ export default function MentorCopilot() {
     setStudentName("");
     setSessionLog([]);
     setLogCopied(false);
+    setCustomQuestion(""); 
   }
 
   // AIが返したフェーズIDからフェーズオブジェクトを取得
@@ -394,7 +395,10 @@ export default function MentorCopilot() {
                     <div key={i} style={{ background: bgCard, border: "1px solid " + border, borderRadius: 8, padding: "12px 14px" }}>
                       <div style={{ fontSize: 10, color: textSub, marginBottom: 6 }}>{log.time}</div>
                       <div style={{ fontSize: 12, color: textSub, marginBottom: 6 }}>入力：{log.input.slice(0, 60)}{log.input.length > 60 ? "…" : ""}</div>
-                      <div style={{ fontSize: 13, color: purple }}>→ 「{log.chosen}」</div>
+                      <div style={{ fontSize: 13, color: purple }}>
+                       → 「{log.chosen}」
+                      {log.isCustom && <span style={{ fontSize: 10, color: textSub, marginLeft: 6 }}>（自分で入力）</span>}
+                      </div>
                     </div>
                   ))}
                 </div>
