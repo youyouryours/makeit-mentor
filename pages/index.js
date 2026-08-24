@@ -247,7 +247,7 @@ export default function MentorCopilot() {
             onChange={e => setCurrentWeek(e.target.value)}
             style={{ width: "100%", background: bgInput, border: "1px solid " + border, borderRadius: 10, color: textMain, fontSize: 14, padding: "12px 16px", outline: "none", boxSizing: "border-box", fontFamily: "inherit", cursor: "pointer" }}
           >
-            {[2,3,4,5,6,7,8,9,10,11,12,13].map(w => (
+            {[1,2,3,4,5,6,7,8,9,10,11,12,13].map(w => (
               <option key={w} value={"week" + w}>week{w}</option>
             ))}
           </select>
