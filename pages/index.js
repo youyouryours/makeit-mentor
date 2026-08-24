@@ -40,7 +40,7 @@ const GOAL_PROMPT = [
   "原則：企画がある場合はそれを実行するロードマップを作る。企画が曖昧な場合は言語化・具体化を最初のステップにする。タスクは今週できるレベルまで小さくする。完璧を求めない。",
   "期間感：9〜11月の3ヶ月。1月フィナーレに向けて逆算してロードマップを設計する。",
   "4つの階層：興味（好き×社会課題）→目標→プロジェクト→タスク。",
-  "【テンション考慮】テンションが1〜2の場合：タスクをより小さく・簡単なものに設定する。まず動けることを最優先にする。",
+  "【やる気/調子考慮】やる気・調子が1〜2の場合：タスクをより小さく・簡単なものに設定する。まず動けることを最優先にする。",
   "【詰まり考慮】難しいと感じている点がある場合：その詰まりを解消するタスクを最初に置く。",
   "【ロードマップ設計】生徒の企画・進行度・詰まりポイントをもとに、5〜6ステップの個別ロードマップを生成する。企画が固まっていない場合は最初のステップを言語化・具体化にする。各ステップにタスクを2〜3個紐づける。currentステップが今週、upcomingが来週以降。",
   "【フィナーレ意識】最後のステップは必ず1月フィナーレに向けた発表・アウトプット準備にする。",
@@ -54,7 +54,7 @@ export default function MentorCopilot() {
 
   // 生徒名（変更時に自動リセット）
   const [studentName, setStudentName] = useState("");
-
+  const [currentWeek, setCurrentWeek] = useState("week1"); // 現在の週
   // 声かけ生成の状態
   const [situation, setSituation] = useState("");
   const [phase] = useState("clarify"); // フェーズはAIが自動判定するため固定
@@ -72,6 +72,7 @@ export default function MentorCopilot() {
   // セッションログ（選んだ声かけの記録）
   const [sessionLog, setSessionLog] = useState([]);
   const [logCopied, setLogCopied] = useState(false); // コピー完了フラグ
+  const [customQuestion, setCustomQuestion] = useState(""); // ← 追加：カスタム声かけ入力
 
   const resultRef = useRef(null); // 結果欄へのスクロール用
 
@@ -126,8 +127,34 @@ export default function MentorCopilot() {
     setError(null);
     setCoachingResult(null);
 
-    const userMessage = "生徒の状況・発言：\n" + situation;
-
+    // 週とフェーズの対応表
+    const weekPhaseMap = {
+      week1: "アイスブレイクフェーズ（関係構築）・次のマイルストーン：week5企画宣言会",
+      week2: "アイスブレイクフェーズ（関係構築）・次のマイルストーン：week5企画宣言会",
+      week3: "アイスブレイクフェーズ（関係構築）・次のマイルストーン：week5企画宣言会",
+      week4: "アイスブレイクフェーズ（関係構築）・次のマイルストーン：week5企画宣言会",
+      week5: "企画宣言会（企画を言語化・発表）・次のマイルストーン：week7企画本格化",
+      week6: "企画宣言会後・次のマイルストーン：week7企画本格化",
+      week7: "企画本格化フェーズ（実行開始）・次のマイルストーン：week9中間発表会",
+      week8: "企画本格化フェーズ（実行中）・次のマイルストーン：week9中間発表会",
+      week9: "中間発表会（進捗発表）・次のマイルストーン：week10最終化フェーズ",
+      week10: "最終化・実行フェーズ・次のマイルストーン：week13企画の実行",
+      week11: "最終化・実行フェーズ（終盤）・次のマイルストーン：week13企画の実行",
+      week12: "最終化・実行フェーズ（追い込み）・次のマイルストーン：week13企画の実行",
+      week13: "企画の実行（フィナーレ）",
+    };
+　function handleAddCustomQuestion() {
+    if (!customQuestion.trim()) return;
+    setSessionLog(prev => [...prev, {
+      time: new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" }),
+      input: situation,
+      chosen: customQuestion.trim(),
+      isCustom: true,
+    }]);
+  setCustomQuestion("");
+}
+    const userMessage = "現在：" + currentWeek + "（" + weekPhaseMap[currentWeek] + "）\n\n生徒の状況・発言：\n" + situation;     
+    
     try {
       const { parsed, text } = await callAPI(SYSTEM_PROMPT, [...coachingHistory, { role: "user", content: userMessage }]);
       setCoachingResult(parsed);
@@ -149,7 +176,23 @@ export default function MentorCopilot() {
     setGoalResult(null);
 
     try {
-      const { parsed } = await callAPI(GOAL_PROMPT, [{ role: "user", content: "生徒の興味・現状：\n" + goalInput }]);
+      const weekPhaseMap = {
+        week1: "アイスブレイクフェーズ（関係構築）・次のマイルストーン：week5企画宣言会",
+        week2: "アイスブレイクフェーズ（関係構築）・次のマイルストーン：week5企画宣言会",
+        week3: "アイスブレイクフェーズ（関係構築）・次のマイルストーン：week5企画宣言会",
+        week4: "アイスブレイクフェーズ（関係構築）・次のマイルストーン：week5企画宣言会",
+        week5: "企画宣言会（企画を言語化・発表）・次のマイルストーン：week7企画本格化",
+        week6: "企画宣言会後・次のマイルストーン：week7企画本格化",
+        week7: "企画本格化フェーズ（実行開始）・次のマイルストーン：week9中間発表会",
+        week8: "企画本格化フェーズ（実行中）・次のマイルストーン：week9中間発表会",
+        week9: "中間発表会（進捗発表）・次のマイルストーン：week10最終化フェーズ",
+        week10: "最終化・実行フェーズ・次のマイルストーン：week13企画の実行",
+        week11: "最終化・実行フェーズ（終盤）・次のマイルストーン：week13企画の実行",
+        week12: "最終化・実行フェーズ（追い込み）・次のマイルストーン：week13企画の実行",
+        week13: "企画の実行（フィナーレ）",
+      };
+
+      const { parsed } = await callAPI(GOAL_PROMPT, [{ role: "user", content: "現在：" + currentWeek + "（" + weekPhaseMap[currentWeek] + "）\n\n生徒の興味・現状：\n" + goalInput }]);
       setGoalResult(parsed);
       setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
     } catch (err) {
@@ -170,6 +213,7 @@ export default function MentorCopilot() {
     setStudentName("");
     setSessionLog([]);
     setLogCopied(false);
+    setCustomQuestion(""); 
   }
 
   // AIが返したフェーズIDからフェーズオブジェクトを取得
@@ -206,6 +250,20 @@ export default function MentorCopilot() {
           )}
         </div>
 
+        {/* 現在の週選択 */}
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ fontSize: 11, color: textSub, letterSpacing: "0.1em", marginBottom: 8 }}>現在の週</div>
+          <select
+            value={currentWeek}
+            onChange={e => setCurrentWeek(e.target.value)}
+            style={{ width: "100%", background: bgInput, border: "1px solid " + border, borderRadius: 10, color: textMain, fontSize: 14, padding: "12px 16px", outline: "none", boxSizing: "border-box", fontFamily: "inherit", cursor: "pointer" }}
+          >
+            {[1,2,3,4,5,6,7,8,9,10,11,12,13].map(w => (
+              <option key={w} value={"week" + w}>week{w}</option>
+            ))}
+          </select>
+        </div>
+        
         {/* タブ切り替え */}
         <div style={{ display: "flex", gap: 4, marginBottom: 28, background: bgInput, borderRadius: 10, padding: 4 }}>
           {[{ id: "coaching", label: "声かけ生成" }, { id: "goal", label: "目標・タスク分解" }].map(tab => (
@@ -257,6 +315,29 @@ export default function MentorCopilot() {
                 {/* 声かけ候補3つ（使用済みボタン付き） */}
                 <div style={{ fontSize: 11, color: textSub, letterSpacing: "0.1em", marginBottom: 12 }}>声かけ候補</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {/* ↓ ここに新規追加：候補リストの一番上 */}
+                    <div style={{ background: bgCard, border: "1px dashed " + border, borderRadius: 10, padding: "14px 16px" }}>
+                      <div style={{ fontSize: 11, color: textSub, marginBottom: 8 }}>自分で考えた声かけを使う場合</div>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <input
+                          type="text"
+                          value={customQuestion}
+                          onChange={e => setCustomQuestion(e.target.value)}
+                          onKeyDown={e => { if (e.key === "Enter") handleAddCustomQuestion(); }}
+                          placeholder="実際に使った声かけを入力"
+                          style={{ flex: 1, background: bgInput, border: "1px solid " + border, borderRadius: 8, color: textMain, fontSize: 13, padding: "10px 12px", outline: "none", boxSizing: "border-box", fontFamily: "inherit" }}
+                        />
+                        <button
+                          onClick={handleAddCustomQuestion}
+                          disabled={!customQuestion.trim()}
+                          style={{ padding: "0 16px", background: !customQuestion.trim() ? "#e0e0ec" : purple, color: !customQuestion.trim() ? "#aaa" : "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: !customQuestion.trim() ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}
+                        >
+                          ログに追加
+                        </button>
+                      </div>
+                    </div>
+                    {/* ↑ ここまで追加 */}
+
                   {coachingResult.questions?.map((q, i) => {
                     // 同じ入力・同じ声かけがログに存在するか確認
                     const isUsed = sessionLog.some(log => log.chosen === q.text && log.input === situation);
@@ -314,7 +395,10 @@ export default function MentorCopilot() {
                     <div key={i} style={{ background: bgCard, border: "1px solid " + border, borderRadius: 8, padding: "12px 14px" }}>
                       <div style={{ fontSize: 10, color: textSub, marginBottom: 6 }}>{log.time}</div>
                       <div style={{ fontSize: 12, color: textSub, marginBottom: 6 }}>入力：{log.input.slice(0, 60)}{log.input.length > 60 ? "…" : ""}</div>
-                      <div style={{ fontSize: 13, color: purple }}>→ 「{log.chosen}」</div>
+                      <div style={{ fontSize: 13, color: purple }}>
+                       → 「{log.chosen}」
+                      {log.isCustom && <span style={{ fontSize: 10, color: textSub, marginLeft: 6 }}>（自分で入力）</span>}
+                      </div>
                     </div>
                   ))}
                 </div>
