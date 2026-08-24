@@ -165,7 +165,6 @@ export default function MentorCopilot() {
     setGoalResult(null);
 
     try {
-      const { parsed } = await callAPI(GOAL_PROMPT, [{ role: "user", content: "生徒の興味・現状：\n" + goalInput }]);
       const weekPhaseMap = {
         week2: "アイスブレイクフェーズ（関係構築）・次のマイルストーン：week5企画宣言会",
         week3: "アイスブレイクフェーズ（関係構築）・次のマイルストーン：week5企画宣言会",
