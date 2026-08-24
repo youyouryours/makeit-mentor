@@ -54,7 +54,7 @@ export default function MentorCopilot() {
 
   // 生徒名（変更時に自動リセット）
   const [studentName, setStudentName] = useState("");
-
+  const [currentWeek, setCurrentWeek] = useState("week2"); // 現在の週
   // 声かけ生成の状態
   const [situation, setSituation] = useState("");
   const [phase] = useState("clarify"); // フェーズはAIが自動判定するため固定
@@ -126,8 +126,24 @@ export default function MentorCopilot() {
     setError(null);
     setCoachingResult(null);
 
-    const userMessage = "生徒の状況・発言：\n" + situation;
+    // 週とフェーズの対応表
+    const weekPhaseMap = {
+      week2: "アイスブレイクフェーズ（関係構築）・次のマイルストーン：week5企画宣言会",
+      week3: "アイスブレイクフェーズ（関係構築）・次のマイルストーン：week5企画宣言会",
+      week4: "アイスブレイクフェーズ（関係構築）・次のマイルストーン：week5企画宣言会",
+      week5: "企画宣言会（企画を言語化・発表）・次のマイルストーン：week7企画本格化",
+      week6: "企画宣言会後・次のマイルストーン：week7企画本格化",
+      week7: "企画本格化フェーズ（実行開始）・次のマイルストーン：week9中間発表会",
+      week8: "企画本格化フェーズ（実行中）・次のマイルストーン：week9中間発表会",
+      week9: "中間発表会（進捗発表）・次のマイルストーン：week10最終化フェーズ",
+      week10: "最終化・実行フェーズ・次のマイルストーン：week13企画の実行",
+      week11: "最終化・実行フェーズ（終盤）・次のマイルストーン：week13企画の実行",
+      week12: "最終化・実行フェーズ（追い込み）・次のマイルストーン：week13企画の実行",
+      week13: "企画の実行（フィナーレ）",
+    };
 
+    const userMessage = "現在：" + currentWeek + "（" + weekPhaseMap[currentWeek] + "）\n\n生徒の状況・発言：\n" + situation;     
+    
     try {
       const { parsed, text } = await callAPI(SYSTEM_PROMPT, [...coachingHistory, { role: "user", content: userMessage }]);
       setCoachingResult(parsed);
@@ -150,6 +166,22 @@ export default function MentorCopilot() {
 
     try {
       const { parsed } = await callAPI(GOAL_PROMPT, [{ role: "user", content: "生徒の興味・現状：\n" + goalInput }]);
+      const weekPhaseMap = {
+        week2: "アイスブレイクフェーズ（関係構築）・次のマイルストーン：week5企画宣言会",
+        week3: "アイスブレイクフェーズ（関係構築）・次のマイルストーン：week5企画宣言会",
+        week4: "アイスブレイクフェーズ（関係構築）・次のマイルストーン：week5企画宣言会",
+        week5: "企画宣言会（企画を言語化・発表）・次のマイルストーン：week7企画本格化",
+        week6: "企画宣言会後・次のマイルストーン：week7企画本格化",
+        week7: "企画本格化フェーズ（実行開始）・次のマイルストーン：week9中間発表会",
+        week8: "企画本格化フェーズ（実行中）・次のマイルストーン：week9中間発表会",
+        week9: "中間発表会（進捗発表）・次のマイルストーン：week10最終化フェーズ",
+        week10: "最終化・実行フェーズ・次のマイルストーン：week13企画の実行",
+        week11: "最終化・実行フェーズ（終盤）・次のマイルストーン：week13企画の実行",
+        week12: "最終化・実行フェーズ（追い込み）・次のマイルストーン：week13企画の実行",
+        week13: "企画の実行（フィナーレ）",
+      };
+
+      const { parsed } = await callAPI(GOAL_PROMPT, [{ role: "user", content: "現在：" + currentWeek + "（" + weekPhaseMap[currentWeek] + "）\n\n生徒の興味・現状：\n" + goalInput }]);
       setGoalResult(parsed);
       setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
     } catch (err) {
@@ -206,6 +238,20 @@ export default function MentorCopilot() {
           )}
         </div>
 
+        {/* 現在の週選択 */}
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ fontSize: 11, color: textSub, letterSpacing: "0.1em", marginBottom: 8 }}>現在の週</div>
+          <select
+            value={currentWeek}
+            onChange={e => setCurrentWeek(e.target.value)}
+            style={{ width: "100%", background: bgInput, border: "1px solid " + border, borderRadius: 10, color: textMain, fontSize: 14, padding: "12px 16px", outline: "none", boxSizing: "border-box", fontFamily: "inherit", cursor: "pointer" }}
+          >
+            {[2,3,4,5,6,7,8,9,10,11,12,13].map(w => (
+              <option key={w} value={"week" + w}>week{w}</option>
+            ))}
+          </select>
+        </div>
+        
         {/* タブ切り替え */}
         <div style={{ display: "flex", gap: 4, marginBottom: 28, background: bgInput, borderRadius: 10, padding: 4 }}>
           {[{ id: "coaching", label: "声かけ生成" }, { id: "goal", label: "目標・タスク分解" }].map(tab => (
