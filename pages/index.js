@@ -324,7 +324,7 @@ export default function MentorCopilot() {
                           type="text"
                           value={customQuestion}
                           onChange={e => setCustomQuestion(e.target.value)}
-                          onKeyDown={e => { if (e.key === "Enter") handleAddCustomQuestion(); }}
+                          onKeyDown={e => { if (e.key === "Enter" && !e.nativeEvent.isComposing) handleAddCustomQuestion(); }}
                           placeholder="実際に使った声かけを入力"
                           style={{ flex: 1, background: bgInput, border: "1px solid " + border, borderRadius: 8, color: textMain, fontSize: 13, padding: "10px 12px", outline: "none", boxSizing: "border-box", fontFamily: "inherit" }}
                         />
